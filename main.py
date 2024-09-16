@@ -43,6 +43,8 @@ morse_storage = " "
 string = input("Enter the String:").upper()
 
 for a in string:
+    if a == ' ':
+        continue
     index = morse_code[a]
     morse_storage = morse_storage +" "+ index
 
