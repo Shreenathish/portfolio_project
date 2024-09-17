@@ -37,7 +37,7 @@ def winner(user_input):
                             return "win"
                         break
                     
-
+tictactoe()
 for i in range(9):
         
         user = int(input("Enter The Number(player 1)X:"))
