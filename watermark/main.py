@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     img = ImageTk.PhotoImage(file='E:/portfolio_project/watermark/mbatman.png')
     imgLabel = Label(app,image=img)
-    imgLabel.place(x= 1,y=1)
+    imgLabel.place(x= 0,y=0)
 
     label = Label(app)
     label.pack(pady=10)
