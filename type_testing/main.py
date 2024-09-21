@@ -13,7 +13,7 @@ def show_message():
 
     lenght_of_text = typed_text.get("1.0", 'end-1c')
 
-    for i in range(len(lenght_of_text)):
+    for i in range(min(len(sample_text), len(lenght_of_text))):
         if sample_text[i] == lenght_of_text[i]:
             accuracy.append(sample_text[i])
 
