@@ -16,6 +16,8 @@ def show_message():
     for i in range(min(len(sample_text), len(lenght_of_text))):
         if sample_text[i] == lenght_of_text[i]:
             accuracy.append(sample_text[i])
+        else:
+            continue
 
     time_taken = end_time - start_time
     time_taken_minutes = time_taken / 60
