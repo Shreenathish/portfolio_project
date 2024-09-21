@@ -8,12 +8,12 @@ gen = DocumentGenerator()
 words = gen.sentence()
 
 def show_message():
-     
-    accuracy = []
 
+    end_time = time.time()  
+    accuracy = []
     lenght_of_text = typed_text.get("1.0", 'end-1c')
 
-    for i in range(min(len(sample_text), len(lenght_of_text))):
+    for i in range(len(lenght_of_text)):
         if sample_text[i] == lenght_of_text[i]:
             accuracy.append(sample_text[i])
         else:
@@ -33,7 +33,7 @@ def show_message():
     messagebox.showinfo("Type Testing Details", f"You typed at a speed of {wpm:.2f} words per minute.\nYour Accuracy is {accuracy_time:.2f}.")
 
 if __name__ == "__main__":
-    sample_text = words[:55]
+    sample_text = words[:60]
 
     root = tk.Tk()
     root.title("Typing Speed")
@@ -48,7 +48,6 @@ if __name__ == "__main__":
 
     start_time = time.time()
     typed_text = tk.Text(root, height=3, width=40)
-    end_time = time.time()  
     typed_text.pack()
 
     tk.Button(root, text="Show Information", command=show_message,bg="grey").pack(side=tk.BOTTOM)
