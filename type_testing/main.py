@@ -8,7 +8,7 @@ gen = DocumentGenerator()
 words = gen.sentence()
 
 def show_message():
-    end_time = time.time()  
+     
     accuracy = []
 
     lenght_of_text = typed_text.get("1.0", 'end-1c')
@@ -43,11 +43,12 @@ if __name__ == "__main__":
     label = tk.Label(root, text="Type Testing",bg="grey")
     label.pack()
 
-    text = tk.Label(root, text=words)
+    text = tk.Label(root, text=sample_text)
     text.pack()
 
     start_time = time.time()
     typed_text = tk.Text(root, height=3, width=40)
+    end_time = time.time()  
     typed_text.pack()
 
     tk.Button(root, text="Show Information", command=show_message,bg="grey").pack(side=tk.BOTTOM)
