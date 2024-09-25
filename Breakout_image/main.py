@@ -1,10 +1,11 @@
 import turtle
 
 wn = turtle.Screen()
-wn.title("Paddle Movement")
+wn.title("Breakout Game")
 wn.bgcolor("black")
 wn.setup(width=600, height=600)
-wn.tracer(0)  
+wn.tracer(0)
+
 paddle = turtle.Turtle()
 paddle.shape("square")
 paddle.color("blue")
@@ -14,14 +15,31 @@ paddle.goto(0, -250)
 
 ball = turtle.Turtle()
 ball.shape("circle")
-ball.shapesize(1.2, 1.2)
+ball.shapesize(stretch_wid=0.8, stretch_len=0.8)
 ball.color("white")
 ball.penup()
-ball.speed(0.1)
 ball.goto(0, -220)
-ball.speed(0.01)
-ball_speed_x = 10
-ball_speed_y = 10
+
+ball_speed_x = 5
+ball_speed_y = 5
+
+score = 0
+score_display = turtle.Turtle()
+score_display.color("white")
+score_display.penup()
+score_display.hideturtle()
+score_display.goto(0, 260)
+score_display.write("Score: 0", align="center", font=("Courier", 24, "normal"))
+
+speed_increments = {
+    'red': 1.5,
+    'yellow': 1.2,
+    'green': 1.0,
+    'blue': 0.8,
+    'purple': 0.5
+}
+
+hit_colors = set()
 
 def move_paddle(x, y):
     if -240 < x < 240:
@@ -45,47 +63,75 @@ def x_bounce():
     global ball_speed_x
     ball_speed_x *= -1
 
-wn.onscreenclick(move_paddle)
-
-def game_loop():
-
-    move()
-    if ball.ycor() > 280 or ball.ycor() < -280:
-        y_bounce()
-
-    if ball.xcor() > 290 or ball.xcor() < -290:
-        x_bounce()
-
-    if (paddle.ycor() - 10 < ball.ycor() < paddle.ycor() + 10) and (paddle.xcor() - 50 < ball.xcor() < paddle.xcor() + 50):
-        y_bounce()
-
-    check_block_collision()
-
-    wn.update() 
-    wn.ontimer(game_loop, 20) 
-
 blocks = []
 def create_blocks():
+    global blocks
+    blocks.clear()
     y = 250
-    colors = ['red','yellow','green','blue','purple']
+    colors = ['red', 'yellow', 'green', 'blue', 'purple']
     
     for color in colors:
-        for i in range(-250,300,50):
+        for i in range(-250, 300, 50):
             block = turtle.Turtle()
             block.shape("square")
             block.color(color)
-            block.shapesize(stretch_wid=1,stretch_len=2)
+            block.shapesize(stretch_wid=1, stretch_len=3)
             block.penup()
-            block.goto(i,y)
+            block.goto(i, y)
             blocks.append(block)
-        y = y - 30
+        y -= 30
+
+def update_score():
+    global score
+    score_display.clear()
+    score_display.write(f"Score: {score}", align="center", font=("Courier", 24, "normal"))
 
 def check_block_collision():
+    global ball_speed_x, ball_speed_y, score
     for block in blocks:
-        if block.isvisible() and (block.ycor() - 10 < ball.ycor() < block.ycor() + 10) and (block.xcor() - 25 < ball.xcor() < block.xcor() + 25):
-            block.hideturtle() 
-            y_bounce() 
-            blocks.remove(block) 
+        if block.isvisible():
+            if (block.ycor() - 10 < ball.ycor() < block.ycor() + 10) and (block.xcor() - 30 < ball.xcor() < block.xcor() + 30):
+                block.hideturtle()
+                blocks.remove(block)
+                score += 1
+                update_score()
+
+                block_color = block.color()[0]
+                if block_color not in hit_colors:
+                    hit_colors.add(block_color)
+                    ball_speed_x += speed_increments[block_color] * (1 if ball_speed_x > 0 else -1)
+                    ball_speed_y += speed_increments[block_color] * (1 if ball_speed_y > 0 else -1)
+
+                y_bounce()
+                return
+
+def reset_game():
+    global score, ball_speed_x, ball_speed_y, hit_colors
+    score = 0
+    ball_speed_x = 5
+    ball_speed_y = 5
+    hit_colors.clear()
+    ball.goto(0, -220)
+    update_score()
+    create_blocks()
+
+def game_loop():
+    move()
+    if ball.ycor() <= -280:
+        reset_game()
+    if ball.ycor() > 280 or ball.ycor() < -280:
+        y_bounce()
+    if ball.xcor() > 290 or ball.xcor() < -290:
+        x_bounce()
+    if (paddle.ycor() - 10 < ball.ycor() < paddle.ycor() + 10) and (paddle.xcor() - 50 < ball.xcor() < paddle.xcor() + 50):
+        y_bounce()
+    
+    check_block_collision()
+
+    wn.update()
+    wn.ontimer(game_loop, 30)
+
+wn.onscreenclick(move_paddle)
 
 create_blocks()
 game_loop()
