@@ -1,5 +1,5 @@
 import turtle
-
+import random
 wn = turtle.Screen()
 wn.title("Breakout Game")
 wn.bgcolor("black")
@@ -13,12 +13,14 @@ paddle.shapesize(stretch_wid=1, stretch_len=5)
 paddle.penup()
 paddle.goto(0, -250)
 
+a = random.randint(-230,-150)
+print(a)
 ball = turtle.Turtle()
 ball.shape("circle")
 ball.shapesize(stretch_wid=0.8, stretch_len=0.8)
 ball.color("white")
 ball.penup()
-ball.goto(0, -220)
+ball.goto(0, a)
 
 ball_speed_x = 5
 ball_speed_y = 5
