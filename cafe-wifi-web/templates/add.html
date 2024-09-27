@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+    <body> 
+        <h1>My Form</h1> 
+        <form method="post"> 
+        {{ forms.csrf_token }} 
+            <p>{{ forms.name.label }} {{ forms.name() }}</p> 
+            <p>{{ forms.map_url.label }} {{ forms.map_url() }}</p> 
+            <p>{{ forms.img_url.label }} {{ forms.img_url() }}</p> 
+            <p>{{ forms.location.label }} {{ forms.location() }}</p> 
+            <p>{{ forms.seats.label }} {{ forms.seats() }}</p> 
+            <p>{{ forms.has_toilet() }} {{ forms.has_toilet.label }}</p> 
+            <p>{{ forms.has_wifi() }} {{ forms.has_wifi.label }}</p> 
+            <p>{{ forms.has_sockets() }} {{ forms.has_sockets.label }}</p> 
+            <p>{{ forms.can_take_calls() }} {{ forms.can_take_calls.label }}</p> 
+            <p>{{ forms.coffee_price.label }} {{ forms.coffee_price() }}</p> 
+            <p>{{ forms.submit() }}</p>
+        </form> 
+    </body> 
+    
+
+</html>
