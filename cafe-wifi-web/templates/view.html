@@ -6,6 +6,32 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <h1>LONDON</h1>
+    <p>The best work and study-friendly cafes, restaurants, libraries, and hotel lobbies in London. Expand your coworking map with our list of casual spots with free and reliable Wi-Fi, ample power sockets, and comfy seating areas!</p>
+    {%for form in form:%}
+        <div class="card-img-top">
+            <h3 class="card-title">{{form.name}}</h3>
+            <a href="{{form.img_url}}"><img alt="{{form.name}}" src="{{form.img_url}}" height="250" width="250"></a>
+            <button><a href="{{url_for('delete',id=form.id)}}" class="button delete-button">Delete</a></button>
+            <button><a href="{{url_for('update',id=form.id)}}"class="button delete-button">Update</a></button>
+            <button><a href="{{url_for('order',id=form.id)}}">Order</a></button>
+        </div>
+        <div class="card-body">
+            <p>
+            <i class="far fa-clock"></i>
+            Toilet : {{form.has_toilet}}
+            </p>
+            <p class="card-text">
+            <i class="fa fa-location-arrow"></i>
+            Coffee Price : {{form.coffee_price}}
+            </p>
+            <p>
+            Seats : {{form.seats}}
+            </p>
+            <div class="active-filters"></div>
+        </div>
+    {%endfor%}
 </body>
 </html>
+
+

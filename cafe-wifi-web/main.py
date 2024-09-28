@@ -1,11 +1,12 @@
-from flask import Flask, jsonify, render_template, request,redirect
+from flask import Flask, jsonify, render_template, request,redirect,url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, Select, String, Boolean
 from random import choice
 from flask_wtf import FlaskForm 
-from wtforms import StringField,BooleanField ,SubmitField
+from wtforms import StringField,BooleanField ,SubmitField,IntegerField
 from wtforms.validators import DataRequired,URL
+from smtplib import SMTP
 
 app = Flask(__name__)
 
@@ -41,8 +42,18 @@ class form(FlaskForm):
     has_sockets = BooleanField('Has Sockets')
     can_take_calls = BooleanField('Can Take Calls')
     coffee_price = StringField('Coffee Price')
-
     submit = SubmitField('Submit')
+
+class updateform(FlaskForm):
+    seats = StringField('Seats', validators=[DataRequired()])
+    has_toilet = BooleanField('Has Toilet')
+    has_wifi = BooleanField('Has Wi-Fi')
+    has_sockets = BooleanField('Has Sockets')
+    can_take_calls = BooleanField('Can Take Calls')
+    coffee_price = StringField('Coffee Price')
+    submit = SubmitField('Submit')
+
+
     
 with app.app_context():
     db.create_all()
@@ -56,7 +67,6 @@ def home():
 def get_the_cafe():
     result = db.session.execute(Select(Cafe))
     all_cafe = result.scalars().all()
-    print(len(all_cafe))
     if not all_cafe:
         return jsonify({"error": "No cafes found"}), 404
     random_cafe = choice(all_cafe)
@@ -107,7 +117,56 @@ def add_cafes():
     return render_template('add.html',forms = forms)
     
         
+@app.route('/view',methods = ['GET','POST'])
+def view():
+    if request.method == 'GET':
+        result = db.session.execute(Select(Cafe)).scalars().all()
+    return render_template('view.html',form = result)
 
+@app.route('/delete')
+def delete():
+    id = request.args.get("id")
+    delete = db.get_or_404(Cafe,id)
+    db.session.delete(delete)
+    db.session.commit()
+    return redirect(url_for("view"))
+
+@app.route('/update',methods = ['GET','POST'])
+def update():
+    forms = updateform()
+    id = request.args.get("id")
+    update = db.get_or_404(Cafe,id)
+    if forms.validate_on_submit():
+        update.seats = forms.seats.data
+        update.has_toilet = forms.has_toilet.data
+        update.has_wifi = forms.has_wifi.data
+        update.has_sockets = forms.has_sockets.data
+        update.can_take_calls = forms.can_take_calls.data
+        update.coffee_price = forms.coffee_price.data
+        db.session.commit()
+        return redirect(url_for('view'))
+    return render_template('update.html',forms = forms,update = update)
+
+@app.route('/order')
+def order():
+    id = request.args.get("id")
+    order = db.get_or_404(Cafe, id)
+    name = order.name
+    seat = order.seats
+    price = order.coffee_price
+    email = 'nathishred@gmail.com'
+    password = 'kvwefaijhxgnwslb'
+    
+    msg = f'Subject: Your order placed.\n\nName: {name}\nSeats: {seat}\nPrice: {price}'
+
+    connect = SMTP('smtp.gmail.com', 587)
+    connect.starttls()
+    connect.login(user=email, password=password)
+    connect.sendmail(from_addr=email, to_addrs=email, msg=msg.encode('utf-8'))
+    connect.close()
+    
+    db.session.commit()
+    return redirect(url_for('view'))
 
 if __name__ == '__main__':
     app.run(debug=True)
